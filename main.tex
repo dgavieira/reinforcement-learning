@@ -131,11 +131,18 @@ REINFORCE & 9,5 & 0,9 & GPU (RTX 4050) \\
 \label{tab:cartpole}
 \end{table}
 
-\textbf{Análise Estatística}: O desempenho da política determinística excede significativamente a política neural ($\Delta\mu = 30,9$ passos, $p < 0.001$). Esta disparidade sugere:
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\textwidth]{returns_plot.png}
+\caption{Evolução dos retornos durante o treinamento das políticas CartPole. A política determinística (azul) demonstra estabilidade superior com maior número médio de passos de tempo por episódio comparada à política REINFORCE neural (laranja).}
+\label{fig:returns_plot}
+\end{figure}
+
+\textbf{Análise Estatística}: O desempenho da política determinística excede significativamente a política neural ($\Delta\mu = 30,9$ passos, $p < 0.001$). A Figura~\ref{fig:returns_plot} ilustra graficamente esta disparidade de desempenho ao longo dos episódios de avaliação. Esta diferenciação sugere:
 \begin{itemize}
     \item Superioridade de políticas estruturadas baseadas em conhecimento a priori do domínio para sistemas de baixa dimensionalidade
     \item Insuficiência amostral para convergência adequada do estimador Monte Carlo do gradiente de política  
-    \item Menor variância comportamental da política neural ($\sigma_{\text{REINFORCE}} = 0,9 < \sigma_{\text{det}} = 7,9$) indicando estabilidade local
+    \item Menor variância comportamental da política neural ($\sigma_{\text{REINFORCE}} = 0,9 < \sigma_{\text{det}} = 7,9$) indicando estabilidade local, conforme observado na consistência dos retornos apresentados na Figura~\ref{fig:returns_plot}
 \end{itemize}
 
 \textbf{Eficiência Computacional}: O procedimento de otimização REINFORCE executou em $t = 0,34$ s com alocação de $2 \times 10^{-2}$ GB de memória VRAM em arquitetura NVIDIA GeForce RTX 4050, validando a escalabilidade de implementações GPU para aproximadores neurais de pequeno porte.
