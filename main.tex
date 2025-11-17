@@ -1,0 +1,132 @@
+\documentclass[conference]{IEEEtran}
+
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{hyperref}
+
+\title{Aprendizado por Reforço}
+
+\author{
+    \IEEEauthorblockN{Diego Giovanni de Alcântara Vieira}
+    \IEEEauthorblockA{
+        Programa de Pós-Graduação em Engenharia Elétrica \\
+        Universidade Federal do Amazonas (UFAM) \\
+        Email: diego.vieira@ufam.edu.br
+    }
+}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+Este trabalho aborda dois problemas clássicos de Aprendizado por Reforço. Na Parte 1, é analisado o controle do sistema CartPole utilizando duas políticas: uma estratégia determinística simples e uma política aprendida por uma rede neural treinada com o algoritmo REINFORCE de Ronald Williams. Na Parte 2, é resolvido um MDP discreto por meio do algoritmo Q-Learning para diferentes valores de taxa de aprendizado e fator de desconto. São reportados médias, desvios padrão e políticas ótimas estimadas.
+\end{abstract}
+
+\section{Introdução}
+
+O Aprendizado por Reforço (AR) estuda agentes capazes de aprender a agir em ambientes dinâmicos através de interações sucessivas, recebendo recompensas que orientam o comportamento. Este trabalho tem dois objetivos principais:
+
+\begin{itemize}
+    \item Comparar políticas para o problema do equilíbrio da haste (CartPole).
+    \item Determinar políticas ótimas em um MDP por Q-Learning.
+\end{itemize}
+
+O ambiente CartPole foi implementado com a biblioteca Gymnasium \cite{gymnasium}, enquanto a política estocástica foi treinada usando o algoritmo REINFORCE \cite{williams1992}.
+
+\section{Metodologia}
+
+\subsection{Parte 1 — CartPole}
+
+O estado do sistema CartPole é composto por quatro variáveis contínuas: posição do carrinho, velocidade, ângulo da haste e velocidade angular. As ações disponíveis são movimentar o carrinho para a esquerda ou direita.
+
+Foram avaliadas duas políticas:
+
+\subsubsection{Política Determinística}
+A ação é escolhida com base no sinal do ângulo:
+\[
+a = 
+\begin{cases}
+1, & \theta > 0,\\
+0, & \theta < 0.
+\end{cases}
+\]
+
+\subsubsection{Política REINFORCE}
+A segunda política foi implementada como uma rede neural com duas camadas ocultas e ativação ReLU. O método REINFORCE atualiza os pesos usando gradiente ascendente na expectativa da recompensa acumulada.
+
+Para cada episódio, são armazenadas probabilidades logarítmicas das ações e recompensas. O retorno descontado é calculado por:
+\[
+G_t = \sum_{k=t}^{T} \gamma^{k-t} r_k.
+\]
+
+A perda é dada por:
+\[
+L = - \sum_t \log \pi(a_t | s_t) \, G_t.
+\]
+
+Ambas as políticas foram executadas por 10 episódios de até 500 passos.
+
+\subsection{Parte 2 — Q-Learning}
+
+O problema consiste em um MDP com estados e ações discretas conforme fornecido pelo professor. O algoritmo Q-Learning atualiza os valores da função ação-valor de acordo com:
+
+\[
+Q(s,a) \leftarrow Q(s,a) + 
+\alpha \left[ r + \beta \max_{a'} Q(s',a') - Q(s,a) \right].
+\]
+
+Foram simulados três cenários:
+
+\begin{enumerate}
+    \item $\alpha = 0.2$, $\beta = 0.2$
+    \item $\alpha = 0.4$, $\beta = 0.1$
+    \item $\alpha = 0.1$, $\beta = 0.4$
+\end{enumerate}
+
+\section{Resultados}
+
+\subsection{Parte 1}
+
+A Tabela~\ref{tab:cartpole} mostra a comparação entre as duas políticas.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{c|c|c}
+\hline
+Política & Média & Desvio Padrão \\
+\hline
+Determinística & X & X \\
+REINFORCE & X & X \\
+\hline
+\end{tabular}
+\caption{Resultados médios das duas políticas no CartPole.}
+\label{tab:cartpole}
+\end{table}
+
+\subsection{Parte 2}
+
+As tabelas Q obtidas para cada cenário devem ser apresentadas conforme saída do código. A política ótima é dada por:
+\[
+\pi(s) = \arg\max_a Q(s,a).
+\]
+
+\section{Conclusões}
+
+A política determinística apresenta desempenho limitado por não levar em conta velocidade angular. Já a política treinada com REINFORCE aprende um comportamento mais estável e tende a atingir maior número de passos acumulados.
+
+No problema do MDP, os resultados mostram como diferentes valores de taxa de aprendizado e desconto alteram a convergência da função ação-valor.
+
+\section{Referências}
+
+\begin{thebibliography}{00}
+
+\bibitem{williams1992}
+R. J. Williams, ``Simple statistical gradient-following algorithms for connectionist reinforcement learning,'' Machine Learning, 1992.
+
+\bibitem{gymnasium}
+Gymnasium. Farama Foundation. \url{https://gymnasium.farama.org}
+
+\end{thebibliography}
+
+\end{document}
